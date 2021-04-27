@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "862572255004",
+    "project_id": "newloanguides",
+    "storage_bucket": "newloanguides.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862572255004:android:976141a1052f5a88390cd9",
+        "android_client_info": {
+          "package_name": "com.instantloan.newloanApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862572255004-vu1q4e9niri82nlhjs6h9qdtn5ppp5j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKoyMCSRLEONKgRr8ieEFYjlsR1zQJEu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862572255004-vu1q4e9niri82nlhjs6h9qdtn5ppp5j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
