@@ -1,71 +1,70 @@
-import 'package:loanguides/Screens/about.dart';
-import 'package:loanguides/Screens/category.dart';
-import 'package:loanguides/Screens/home.dart';
 import 'package:flutter/material.dart';
+
+import '../Screens/about.dart';
+import '../Screens/category.dart';
+import '../Screens/home.dart';
 
 class LoanGuides extends StatefulWidget {
   @override
   _LoanGuidesState createState() => _LoanGuidesState();
 }
 
-class _LoanGuidesState extends State<LoanGuides> {
-  PageController _pageController = PageController();
-
-  List<Widget> _screens = [
-    Home(),
-    Category(),
-    About(),
-  ];
-
-  int _selectedIndex = 0;
-
-  void _onPageChanged(int currentIndex) {
-    setState(() {
-      _selectedIndex = currentIndex;
-    });
-  }
-
-  void _onItemTapped(int selectedIndex) {
-    _pageController.jumpToPage(selectedIndex);
+class _LoanGuidesState extends State<LoanGuides> with TickerProviderStateMixin {
+  TabController _tabController;
+  @override
+  void initState() {
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: PageView(
-          controller: _pageController,
-          children: _screens,
-          onPageChanged: _onPageChanged,
-          physics: NeverScrollableScrollPhysics(),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          elevation: 20,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
+    return DefaultTabController(
+      length: 3,
+      child: SafeArea(
+        child: Scaffold(
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              Category(),
+              Home(),
+              About(),
+            ],
+          ),
+          bottomSheet: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: Container(
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                indicatorWeight: 8,
+                indicatorColor: Theme.of(context).primaryColor,
+                physics: BouncingScrollPhysics(),
+                tabs: [
+                  _customTabBarWidget(context, icon: Icons.menu, label: 'Categories'),
+                  _customTabBarWidget(context, icon: Icons.account_balance_outlined, label: 'Loans'),
+                  _customTabBarWidget(context, icon: Icons.info, label: 'About'),
+                ],
               ),
-              label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.list,
-              ),
-              label: 'Category',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.info,
-              ),
-              label: 'About',
-            )
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Theme.of(context).primaryColor,
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _customTabBarWidget(BuildContext context, {IconData icon, String label}) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          color: Theme.of(context).primaryColor,
+        ),
+        Text(
+          label,
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
+      ],
     );
   }
 }

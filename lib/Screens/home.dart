@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
-import 'package:loanguides/Components/constants.dart';
-import 'package:loanguides/Components/facebookAds.dart';
-import 'package:loanguides/Components/utilities.dart';
-import '../Screens/add.dart';
-import '../Screens/edit.dart';
-import 'package:loanguides/Screens/userDisplay.dart';
+import 'package:share/share.dart';
+
+import '../Components/constants.dart';
+import '../Components/facebookAds.dart';
+import '../Screens/userDisplay.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,13 +15,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CollectionReference app = FirebaseFirestore.instance.collection('Apps');
   final MyFacebookAdsManager adsManager = MyFacebookAdsManager();
+  bool isLoading = true;
+  timer() async {
+    await adsManager.showInterstitialAd();
+    Future.delayed(Duration(milliseconds: 300)).then((value) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    FacebookAudienceNetwork.init(
-    );
+    FacebookAudienceNetwork.init(testingId: "55afa8d9-ff1d-4271-b46a-7f877515e355");
     adsManager.loadInterstitialAd();
+
+    timer();
   }
 
   @override
@@ -38,7 +47,7 @@ class _HomeState extends State<Home> {
           ),
           centerTitle: true,
           title: Text(
-            'Loan Guide',
+            'Loan Bazzar',
             style: kAppBarStyle,
           ),
 
@@ -55,150 +64,127 @@ class _HomeState extends State<Home> {
           //   )
           // ],
         ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: app.snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
-            }
-            return ListView(
-              children: snapshot.data.docs.map((DocumentSnapshot document) {
-                return Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: adsManager.showBannerAd(),
-                        ),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                ),
+              )
+            : StreamBuilder<QuerySnapshot>(
+                stream: app.snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
                       ),
-                      Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                adsManager.showInterstitialAd();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => UserDisplay(
-                                      docToDisplay: document,
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+                    child: ListView(
+                      children: snapshot.data.docs.map((DocumentSnapshot snapshot) {
+                        return GestureDetector(
+                          onTap: () async {
+                            await adsManager.showInterstitialAd().then(
+                                  (value) => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => UserDisplay(
+                                        docToDisplay: snapshot,
+                                      ),
                                     ),
                                   ),
                                 );
-                              },
-                              child: Stack(
-                                alignment: Alignment.bottomLeft,
-                                children: [
-                                  Image(
-                                    image:NetworkImage(
-                                        document.data()['ImageUrl']),
-                                    height: 160,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10, bottom: 10),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          document.data()['AppName'],
-                                          style: kCardAppName,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Builder(
-                                            builder: (BuildContext context) {
-                                          return IconButton(
-                                              icon: Icon(
-                                                Icons.share,
-                                                color:
-                                                    Theme.of(context).cardColor,
-                                              ),
-                                              onPressed: () async {
-                                                await share(document);
-                                              });
-                                        })
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  child: adsManager.showBannerAd(),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left:10.0,right: 10.0,top: 10.0),
-                              child: Text(
-                                document.data()['AppDescription'],
-                                style: kCardDescription,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                child: Card(
+                                  margin: EdgeInsets.all(0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.12,
+                                        child: Image.network(
+                                          snapshot.data()['ImageUrl'],
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  snapshot.data()['AppName'],
+                                                  style: kCardAppName,
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.share),
+                                                  onPressed: () {
+                                                    Share.share(snapshot.data()['AppLink']);
+                                                  },
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              snapshot.data()['AppDescription'],
+                                              style: kCardDescription,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                            ButtonBar(
-                              alignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    // CardButton(
-                                    //   text: 'Edit Info',
-                                    //   onPress: () {
-                                    //     Navigator.push(
-                                    //       context,
-                                    //       MaterialPageRoute(
-                                    //         builder: (context) => Edit(
-                                    //           docToEdit: document,
-                                    //         ),
-                                    //       ),
-                                    //     );
-                                    //   },
-                                    // ),
-                                    SizedBox(
-                                      width: 14,
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.8,
-                                      child: CardButton(
-                                        text: 'Apply Now',
-                                        onPress: () {
-                                          adsManager.showInterstitialAd();
-                                          Navigator.push(
+                              Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await adsManager.showInterstitialAd().then(
+                                          (value) => Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (_) => UserDisplay(
-                                                docToDisplay: document,
+                                                docToDisplay: snapshot,
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          },
-        ),
+                                          ),
+                                        );
+                                  },
+                                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.8))),
+                                  child: Text('Apply Now'),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

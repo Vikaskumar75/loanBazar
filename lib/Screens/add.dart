@@ -1,7 +1,8 @@
-import 'package:loanguides/Components/constants.dart';
-import 'package:loanguides/Components/firebase.dart';
-import 'package:loanguides/Components/utilities.dart';
 import 'package:flutter/material.dart';
+
+import '../Components/constants.dart';
+import '../Components/firebase.dart';
+import '../Components/utilities.dart';
 
 class Add extends StatefulWidget {
   final fireStore = FireStore();
@@ -54,10 +55,7 @@ class _AddState extends State<Add> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.camera),
-                                  Text('Cover Image')
-                                ],
+                                children: [Icon(Icons.camera), Text('Cover Image')],
                               ),
                             ),
                           )
@@ -85,9 +83,7 @@ class _AddState extends State<Add> {
                         padding: EdgeInsets.all(4.0),
                         color: Theme.of(context).primaryColor,
                         elevation: 10,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(24.0))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
                         child: Text(
                           'Upload',
                           style: kButtonTextStyle.copyWith(fontSize: 14.0),
@@ -118,10 +114,7 @@ class _AddState extends State<Add> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: dropDownValue == null
-                            ? Colors.grey[400]
-                            : Theme.of(context).primaryColor),
+                    border: Border.all(color: (dropDownValue == null ? Colors.grey[400] : Theme.of(context).primaryColor)),
                     borderRadius: BorderRadius.all(
                       Radius.circular(20.0),
                     ),
@@ -144,8 +137,7 @@ class _AddState extends State<Add> {
                             dropDownValue = newValue;
                           });
                         },
-                        items:
-                            item.map<DropdownMenuItem<String>>((String value) {
+                        items: item.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -168,8 +160,7 @@ class _AddState extends State<Add> {
                 ),
                 TextField(
                   controller: _appDescription,
-                  decoration:
-                      inputDecorator.copyWith(hintText: 'App Description'),
+                  decoration: inputDecorator.copyWith(hintText: 'App Description'),
                   maxLines: 15,
                 ),
                 SizedBox(
@@ -185,8 +176,7 @@ class _AddState extends State<Add> {
                 ),
                 TextField(
                   controller: _appLink,
-                  decoration: inputDecorator.copyWith(
-                      hintText: 'App link', suffixIcon: Icon(Icons.link)),
+                  decoration: inputDecorator.copyWith(hintText: 'App link', suffixIcon: Icon(Icons.link)),
                 ),
                 SizedBox(
                   height: 15.0,
@@ -198,24 +188,15 @@ class _AddState extends State<Add> {
                         text: 'SUBMIT',
                         color: Theme.of(context).primaryColor,
                         onPress: () async {
-                          if (_appName.text == "" ||
-                              _appDescription.text == "" ||
-                              _appLink.text == "" ||
-                              dropDownValue == null) {
+                          if (_appName.text == "" || _appDescription.text == "" || _appLink.text == "" || dropDownValue == null) {
                             Scaffold.of(context).showSnackBar(
                               snackBar,
                             );
                           } else {
-                            var downloadUrl = await widget.fireStorage
-                                .addImage(file, _appName.text);
+                            var downloadUrl = await widget.fireStorage.addImage(file, _appName.text);
                             imageUrl = downloadUrl;
                             await widget.fireStore
-                                .addApp(
-                                    _appName.text,
-                                    dropDownValue,
-                                    _appDescription.text,
-                                    _appLink.text,
-                                    imageUrl.toString())
+                                .addApp(_appName.text, dropDownValue, _appDescription.text, _appLink.text, imageUrl.toString())
                                 .whenComplete(
                                   () => Navigator.pop(context),
                                 );

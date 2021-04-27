@@ -74,8 +74,7 @@ List<LegalItem> legalInfo = [
   ),
   LegalItem(
     headerValue: 'Contact us',
-    bodyValue:
-        'If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at:\nloanguidesavi@gmail.com.',
+    bodyValue: 'If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at:\nloanguidesavi@gmail.com.',
   ),
 ];
 
@@ -122,14 +121,14 @@ BoxDecoration kCoverImageDecorator = BoxDecoration(
   ),
 );
 
-final kCardAppName = TextStyle(color: Colors.grey[400], fontSize: 24.0);
+final kCardAppName = TextStyle(color: Color(0xFF0B295D), fontSize: 24.0);
 
 final kCardDescription = TextStyle(
   fontSize: 16.0,
 );
 
 final kCardButtonTextStyle = TextStyle(
-  color: Colors.white,
+  color: Color(0xFF0B295D),
   fontSize: 12.0,
 );
 
@@ -140,11 +139,9 @@ final kUserDisplayDescription = TextStyle(
 
 final kCategoryCardStyle = TextStyle(color: Color(0xFF0B295D), fontSize: 20);
 
-final kAlertDeleteTextStyle =
-    TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold);
+final kAlertDeleteTextStyle = TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold);
 
-final kCollapsibleHeaderStyle =
-    TextStyle(color: Color(0xFF0B295D), fontSize: 16.0);
+final kCollapsibleHeaderStyle = TextStyle(color: Color(0xFF0B295D), fontSize: 16.0);
 
 final kAboutBoxDecoration = BoxDecoration(
   borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -165,5 +162,5 @@ final kAboutBoxDecoration = BoxDecoration(
   ],
 );
 
-final String kInterstitialAdId = '227084222477185_2459450772577';
+final String kInterstitialAdId = '227084222477185_227086952476912';
 final String kBannerAdId = '227084222477185_227085865810354';

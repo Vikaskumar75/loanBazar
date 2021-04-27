@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
-import 'package:share/share.dart';
+
 import 'constants.dart';
 
 class Button extends StatelessWidget {
@@ -14,7 +14,7 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      onPressed: onPress,
+      onPressed: onPress(),
       padding: EdgeInsets.all(12.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -40,7 +40,7 @@ InputDecoration inputDecorator = InputDecoration(
       Radius.circular(20.0),
     ),
     borderSide: BorderSide(
-      color: Colors.cyan[600],
+      color: (Colors.cyan[600]),
       style: BorderStyle.solid,
     ),
   ),
@@ -49,7 +49,7 @@ InputDecoration inputDecorator = InputDecoration(
         Radius.circular(20.0),
       ),
       borderSide: BorderSide(
-        color: Colors.grey[400],
+        color: (Colors.grey[400]),
       )),
 );
 
@@ -65,13 +65,10 @@ final SnackBar snackBar = SnackBar(
 );
 
 uploadImage() async {
-  List<Media> res = await ImagesPicker.pick(
-      count: 1,
-      pickType: PickType.image,
-      cropOpt: CropOption(aspectRatio: CropAspectRatio.wh2x1));
+  List<Media> res = await ImagesPicker.pick(count: 1, pickType: PickType.image, cropOpt: CropOption(aspectRatio: CropAspectRatio.wh2x1));
   if (res != null) {
     print(res.map((e) => e.path).toList());
-    var file = File(res[0]?.path);
+    var file = File(res[0].path);
     return file;
   } else
     return null;
@@ -85,7 +82,7 @@ class CardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: onPress,
+      onPressed: onPress(),
       child: Text(
         text,
         style: kCardButtonTextStyle,
@@ -124,7 +121,7 @@ class AlertDelete extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: onPress1,
+          onPressed: onPress1(),
           child: Text(
             'Delete',
             style: TextStyle(
@@ -133,7 +130,7 @@ class AlertDelete extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: onPress2,
+          onPressed: onPress2(),
           child: Text(
             'Cancel',
             style: TextStyle(
@@ -146,10 +143,6 @@ class AlertDelete extends StatelessWidget {
   }
 }
 
-Future<void> share(DocumentSnapshot doc) async {
-  await Share.share(doc.data()['AppLink']);
-}
-
 class Collapsible extends StatelessWidget {
   const Collapsible({this.header, this.info});
   final String header;
@@ -160,9 +153,7 @@ class Collapsible extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(6.0, 3, 6, 3),
       child: ExpandableTheme(
-        data: ExpandableThemeData(
-            iconColor: Color(0xFF0B295D),
-            headerAlignment: ExpandablePanelHeaderAlignment.center),
+        data: ExpandableThemeData(iconColor: Color(0xFF0B295D), headerAlignment: ExpandablePanelHeaderAlignment.center),
         child: ExpandablePanel(
           header: Text(
             header,
@@ -176,6 +167,7 @@ class Collapsible extends StatelessWidget {
               overflow: TextOverflow.fade,
             ),
           ),
+          collapsed: null,
         ),
       ),
     );

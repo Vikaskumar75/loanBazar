@@ -1,8 +1,9 @@
-import 'package:loanguides/Components/constants.dart';
-import 'package:loanguides/Components/firebase.dart';
-import 'package:loanguides/Components/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../Components/constants.dart';
+import '../Components/firebase.dart';
+import '../Components/utilities.dart';
 
 class Edit extends StatefulWidget {
   final fireStore = FireStore();
@@ -81,9 +82,7 @@ class _EditState extends State<Edit> {
                         padding: EdgeInsets.all(4.0),
                         color: Theme.of(context).primaryColor,
                         elevation: 10,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(24.0))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
                         child: Text(
                           'Upload',
                           style: kButtonTextStyle.copyWith(fontSize: 14.0),
@@ -114,10 +113,7 @@ class _EditState extends State<Edit> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: dropDownValue == null
-                            ? Colors.grey[400]
-                            : Theme.of(context).primaryColor),
+                    border: Border.all(color: (dropDownValue == null ? Colors.grey[400] : Theme.of(context).primaryColor)),
                     borderRadius: BorderRadius.all(
                       Radius.circular(20.0),
                     ),
@@ -140,8 +136,7 @@ class _EditState extends State<Edit> {
                             dropDownValue = newValue;
                           });
                         },
-                        items:
-                            item.map<DropdownMenuItem<String>>((String value) {
+                        items: item.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -164,8 +159,7 @@ class _EditState extends State<Edit> {
                 ),
                 TextField(
                   controller: _appDescription,
-                  decoration:
-                      inputDecorator.copyWith(hintText: 'App Description'),
+                  decoration: inputDecorator.copyWith(hintText: 'App Description'),
                   maxLines: 15,
                 ),
                 SizedBox(
@@ -181,8 +175,7 @@ class _EditState extends State<Edit> {
                 ),
                 TextField(
                   controller: _appLink,
-                  decoration: inputDecorator.copyWith(
-                      hintText: 'App link', suffixIcon: Icon(Icons.link)),
+                  decoration: inputDecorator.copyWith(hintText: 'App link', suffixIcon: Icon(Icons.link)),
                 ),
                 SizedBox(
                   height: 15.0,
@@ -194,24 +187,15 @@ class _EditState extends State<Edit> {
                         text: 'SUBMIT',
                         color: Theme.of(context).primaryColor,
                         onPress: () async {
-                          if (_appName.text == "" ||
-                              _appDescription.text == "" ||
-                              _appLink.text == "" ||
-                              dropDownValue == null) {
+                          if (_appName.text == "" || _appDescription.text == "" || _appLink.text == "" || dropDownValue == null) {
                             Scaffold.of(context).showSnackBar(
                               snackBar,
                             );
                           } else {
-                            var downloadUrl = await widget.fireStorage
-                                .addImage(file, _appName.text);
+                            var downloadUrl = await widget.fireStorage.addImage(file, _appName.text);
                             imageUrl = downloadUrl;
                             await widget.fireStore
-                                .addApp(
-                                    _appName.text,
-                                    dropDownValue,
-                                    _appDescription.text,
-                                    _appLink.text,
-                                    imageUrl.toString())
+                                .addApp(_appName.text, dropDownValue, _appDescription.text, _appLink.text, imageUrl.toString())
                                 .whenComplete(
                                   () => Navigator.pop(context),
                                 );
@@ -235,9 +219,7 @@ class _EditState extends State<Edit> {
                                 return AlertDelete(
                                   appName: _appName.text,
                                   onPress1: () async {
-                                    await widget.fireStore
-                                        .deleteApp(widget.docToEdit)
-                                        .whenComplete(() {
+                                    await widget.fireStore.deleteApp(widget.docToEdit).whenComplete(() {
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                     });
